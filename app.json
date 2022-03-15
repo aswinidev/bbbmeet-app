@@ -1,0 +1,15 @@
+{
+    "id": "d4377045-667c-44aa-9d2f-06f26cfa050b",
+    "version": "0.0.1",
+    "requiredApiVersion": "^1.4.0",
+    "iconFile": "icon.png",
+    "author": {
+        "name": "Aswini",
+        "homepage": "n/a",
+        "support": "n/a"
+    },
+    "name": "bbbmeet-app",
+    "nameSlug": "bbbmeet-app",
+    "classFile": "BbbmeetAppApp.ts",
+    "description": "A Rocket.Chat App that will enable users in a channel to join an existing weekly meeting if it is in progress. Or query for recorded meeting videos and view them."
+}
