@@ -12,6 +12,7 @@ import { SettingType } from '@rocket.chat/apps-engine/definition/settings';
 import { JoinCommand } from './Commands/JoinCommand';
 import { ListRecordings } from './Commands/ListRecordings';
 import { JoinEndpoint } from './endpoints/JoinEndpoint';
+import { settings } from './settings';
 
 export class BbbmeetAppApp extends App {
     private readonly appLogger: ILogger
@@ -35,22 +36,7 @@ export class BbbmeetAppApp extends App {
         })
 
         // Adding app settings
-        configuration.settings.provideSetting({
-            id: 'meeting-day',
-            public: true,
-            type: SettingType.STRING,
-            required: true,
-            packageValue: 'Monday',
-            i18nLabel: 'Meeting Day',
-        }) 
-        configuration.settings.provideSetting({
-            id: 'meeting-time',
-            public: true,
-            type: SettingType.NUMBER,
-            required: true,
-            packageValue: '0000',
-            i18nLabel: 'Meeting Time',
-        }) 
+        await Promise.all(settings.map((setting) => configuration.settings.provideSetting(setting)));
     }
 
     // To Do: Add a reminder
@@ -58,5 +44,4 @@ export class BbbmeetAppApp extends App {
     // }
 
     // To Do: The settings aren't updating so i think i have to add a onSettingUpdate function
-    // To Do: Try to put all the app settings in a single settings.ts file to maintain the clarity of code
 }
