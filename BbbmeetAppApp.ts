@@ -9,6 +9,7 @@ import { ApiEndpoint, ApiSecurity, ApiVisibility } from '@rocket.chat/apps-engin
 import { App } from '@rocket.chat/apps-engine/definition/App';
 import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
 import { SettingType } from '@rocket.chat/apps-engine/definition/settings';
+import { HelpCommand } from './Commands/HelpCommand';
 import { JoinCommand } from './Commands/JoinCommand';
 import { ListRecordings } from './Commands/ListRecordings';
 import { JoinEndpoint } from './endpoints/JoinEndpoint';
@@ -23,10 +24,10 @@ export class BbbmeetAppApp extends App {
     }
 
     public async extendConfiguration(configuration: IConfigurationExtend) : Promise<void> {
-        const joinCommand : JoinCommand = new JoinCommand()
-        await configuration.slashCommands.provideSlashCommand(joinCommand)
-        const listRecordings : ListRecordings = new ListRecordings()
-        await configuration.slashCommands.provideSlashCommand(listRecordings)
+        // Registering slash commands
+        await configuration.slashCommands.provideSlashCommand(new JoinCommand())
+        await configuration.slashCommands.provideSlashCommand(new ListRecordings())
+        await configuration.slashCommands.provideSlashCommand(new HelpCommand())
 
         // Registering API endpoints 
         configuration.api.provideApi({
@@ -43,5 +44,5 @@ export class BbbmeetAppApp extends App {
     // public async onEnable(environment: IEnvironmentRead, configurationModify: IConfigurationModify): Promise<boolean> {
     // }
 
-    // To Do: The settings aren't updating so i think i have to add a onSettingUpdate function
+    // Reminder: to check the save change disability in the app settings and make a PR
 }

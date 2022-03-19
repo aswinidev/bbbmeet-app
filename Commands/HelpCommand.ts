@@ -5,9 +5,9 @@ import {ISlashCommand, SlashCommandContext} from "@rocket.chat/apps-engine/defin
 import { BlockBuilder, TextObjectType } from "@rocket.chat/apps-engine/definition/uikit";
 import { IUser } from "@rocket.chat/apps-engine/definition/users";
 
-export class JoinCommand implements ISlashCommand {
-    public command = "joinmeet";
-    public i18nDescription = "Lets you join weekly meetings";
+export class HelpCommand implements ISlashCommand {
+    public command = "helpmeet";
+    public i18nDescription = "Tells you how the app / app commands work";
     public providesPreview = false;
     public i18nParamsExample = "";
 
@@ -21,25 +21,13 @@ export class JoinCommand implements ISlashCommand {
         const sender : IUser = (await read.getUserReader().getAppUser()) as IUser
         const room : IRoom = context.getRoom()
         
-        // A blockbuilder to send a message to the user who implemented this command with a join button
-        // which would let them to join the meeting
+        // A help command which will be completed at the end of the project
         const blockBuilder: BlockBuilder = modify.getCreator().getBlockBuilder()
         blockBuilder.addSectionBlock({
             text: {
                 type: TextObjectType.PLAINTEXT,
-                text: 'Join the weekly meeting by clicking the "Join" button below'
+                text: 'You have implemented the help command'
             }
-        })
-        blockBuilder.addActionsBlock({
-            elements: [
-                blockBuilder.newButtonElement({
-                    text: {
-                        type: TextObjectType.PLAINTEXT,
-                        text: 'Join'
-                    },
-                    url: 'google.com'
-                })
-            ]
         })
 
         await modify.getNotifier().notifyUser(context.getSender(), {
