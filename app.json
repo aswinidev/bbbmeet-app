@@ -1,16 +1,16 @@
 {
-    "id": "d4377045-667c-44aa-9d2f-06f26cfa050b",
+    "id": "0dc8312a-f8aa-44cb-bbef-a9e9cf88f243",
     "version": "0.0.1",
     "requiredApiVersion": "^1.19.0",
     "iconFile": "icon.png",
     "author": {
         "name": "Aswini",
-        "homepage": "n/a",
-        "support": "n/a"
+        "homepage": "github.com/aswinidev",
+        "support": "github.com/aswinidev"
     },
-    "name": "bbbmeet-app",
-    "nameSlug": "bbbmeet-app",
-    "classFile": "BbbmeetAppApp.ts",
-    "description": "A Rocket.Chat App that will enable users in a channel to join an existing weekly meeting if it is in progress. Or query for recorded meeting videos and view them.",
+    "name": "bbb.meet",
+    "nameSlug": "bbbmeet",
+    "classFile": "BbbMeetApp.ts",
+    "description": "A weekly meeting and video archiving system",
     "implements": []
 }
