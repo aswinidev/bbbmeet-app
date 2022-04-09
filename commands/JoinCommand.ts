@@ -40,29 +40,6 @@ export class JoinCommand implements ISlashCommand {
         
         //make the create call
         const response = await http.get(url)
-
-        const sender : IUser = (await read.getUserReader().getAppUser()) as IUser
-        const room : IRoom = context.getRoom()
-        const blockBuilder: BlockBuilder = modify.getCreator().getBlockBuilder()
-        blockBuilder.addSectionBlock({
-            text: {
-                type: TextObjectType.PLAINTEXT,
-                text: `CreateResponse: ${response.statusCode}`
-            }
-        })
-
-        blockBuilder.addSectionBlock({
-            text: {
-                type: TextObjectType.PLAINTEXT,
-                text: `${response.content}`
-            }
-        })
-
-        await modify.getNotifier().notifyUser(context.getSender(), {
-            sender,
-            room,
-            blocks: blockBuilder.getBlocks()
-        })
         
         if(response.statusCode === 200){
             //Create the join query string
@@ -70,18 +47,28 @@ export class JoinCommand implements ISlashCommand {
             const joinsha1string = "join" + joinquery + `${this.sharedSecret}`
             const joinsha1 = sha1(joinsha1string)
             const joinurl = bbbserver + "/bigbluebutton/api/join?" + joinquery + `&checksum=${joinsha1}`
-            const joinresponse =  await http.get(joinurl)
 
             const sender : IUser = (await read.getUserReader().getAppUser()) as IUser
             const room : IRoom = context.getRoom()
             
-            // A help command which will be completed at the end of the project
+            // The Message is sent with a join url
             const blockBuilder: BlockBuilder = modify.getCreator().getBlockBuilder()
             blockBuilder.addSectionBlock({
                 text: {
-                    type: TextObjectType.PLAINTEXT,
-                    text: `JoinResponse: ${joinresponse.statusCode}`
+                    type: TextObjectType.MARKDOWN,
+                    text: `Click on the join button below to join the meeting:\n`
                 }
+            })
+            blockBuilder.addActionsBlock({
+                elements: [
+                    blockBuilder.newButtonElement({
+                        text: {
+                            type: TextObjectType.PLAINTEXT,
+                            text: 'Join'
+                        },
+                        url: joinurl
+                    })
+                ]
             })
 
             await modify.getNotifier().notifyUser(context.getSender(), {
