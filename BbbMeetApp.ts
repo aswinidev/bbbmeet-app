@@ -12,6 +12,7 @@ import {
     IPersistence,
     IRead,
 } from '@rocket.chat/apps-engine/definition/accessors';
+import { ApiSecurity, ApiVisibility } from '@rocket.chat/apps-engine/definition/api';
 import { App } from '@rocket.chat/apps-engine/definition/App';
 import { IMessage } from '@rocket.chat/apps-engine/definition/messages';
 import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
@@ -22,6 +23,7 @@ import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { HelpCommand } from './commands/HelpCommand';
 import { JoinCommand } from './commands/JoinCommand';
 import { StopReminder } from './commands/StopReminder';
+import { WebhookEndpoint } from './endpoints/webhook';
 import { jobId } from './enums/jobid';
 import { reminderProcessor } from './processors/processor';
 import { AppSettings } from './settings/appsettings';
@@ -109,6 +111,12 @@ export class BbbMeetApp extends App {
         await configuration.slashCommands.provideSlashCommand(new StopReminder())
         await configuration.slashCommands.provideSlashCommand(new JoinCommand())
         await configuration.slashCommands.provideSlashCommand(new HelpCommand())
+
+        configuration.api.provideApi({
+            visibility: ApiVisibility.PUBLIC,
+            security: ApiSecurity.UNSECURE,
+            endpoints: [new WebhookEndpoint(this)],
+        });
 
         //Register processors
         await configuration.scheduler.registerProcessors([
