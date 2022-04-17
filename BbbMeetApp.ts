@@ -17,6 +17,7 @@ import { App } from '@rocket.chat/apps-engine/definition/App';
 import { IMessage } from '@rocket.chat/apps-engine/definition/messages';
 import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
+import { IJobContext } from '@rocket.chat/apps-engine/definition/scheduler';
 import { ISetting } from '@rocket.chat/apps-engine/definition/settings';
 import { TextObjectType } from '@rocket.chat/apps-engine/definition/uikit';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
@@ -25,18 +26,15 @@ import { JoinCommand } from './commands/JoinCommand';
 import { StopReminder } from './commands/StopReminder';
 import { WebhookEndpoint } from './endpoints/webhook';
 import { jobId } from './enums/jobid';
-import { reminderProcessor } from './processors/processor';
 import { AppSettings } from './settings/appsettings';
 import { BbbSettings } from './settings/bbbsettings';
 
 export class BbbMeetApp extends App {
-    private mod: IModify
 
     constructor(info: IAppInfo, logger: ILogger, accessors: IAppAccessors) {
         super(info, logger, accessors);
     }
     public async onInstall(context: IAppInstallationContext, read: IRead, http: IHttp, persistence: IPersistence, modify: IModify): Promise<void> {
-        this.mod = modify
         //logging in the app logs
         this.getLogger().log('Hello Everyone! I am a Rocket.Chat App which will take care about your weekly meetings');
         
@@ -59,7 +57,7 @@ export class BbbMeetApp extends App {
 
     public async onSettingUpdated(setting: ISetting, configurationModify: IConfigurationModify, read: IRead, http: IHttp): Promise<void> {
         // cancel all the existing jobs
-        // await configurationModify.scheduler.cancelJob(jobId.Reminder)
+        await configurationModify.scheduler.cancelJob(jobId.Reminder)
 
         // Find the meeting channel from the App settings
         const set = read.getEnvironmentReader().getSettings()
@@ -89,17 +87,13 @@ export class BbbMeetApp extends App {
             return
         }
 
-        const modify = this.mod
         if(room !== undefined){
             await configurationModify.scheduler.scheduleRecurring({
                 id: jobId.Reminder,
                 interval: `${mins} ${hrs} * * ${dayind}`,
-                // interval: '10 seconds',
                 skipImmediate: true,
-                data: {modify, read}
-                // data: {test: true},
+                data: {}
             })
-            this.getLogger().log('chal ja na bhaiii.. aisa karega abb?!')
             this.getLogger().log(`${mins} ${hrs} * * ${dayind}`)
         }
     }
@@ -122,13 +116,10 @@ export class BbbMeetApp extends App {
         await configuration.scheduler.registerProcessors([
             {
                 id: jobId.Reminder,
-                processor: async ({modify, read} : {
-                    modify: IModify
-                    read: IRead
-                }): Promise<void> => {
+                processor: async (jobContext: IJobContext, read: IRead, modify: IModify, http: IHttp, persis: IPersistence): Promise<void> => {
                     const block = modify.getCreator().getBlockBuilder()
                 
-                    // this.getLogger().log('Reached Processor')
+                    this.getLogger().log('Reached Processor')
                     //Creating the block template 
                     block.addSectionBlock({
                         text: {
